@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Home</title>
+    <link rel="stylesheet" href="adminhome_css.css">
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Admin Home</h1>
+        <div class="nav-links">
+            <a href="adminnew.html">Add New Event</a>
+            <a href="login.html">Sign Out</a>
+        </div>
+    </nav>
+
+    <main class="dashboard">
+        <header>
+            <h2>Event Dashboard</h2>
+        </header>
+
+        <section class="event-list">
+            <h3>Manage Events</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Event Name</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Location</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="event-list">
+                    <!-- Events will be dynamically loaded here -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <div class="popup" id="popup" role="alertdialog" aria-labelledby="popup-title" aria-describedby="popup-message" style="display: none;">
+        <span class="popup-close" onclick="closePopup()" role="button" aria-label="Close popup">&times;</span>
+        <h2 id="popup-title">Notification</h2>
+        <p id="popup-message">You have successfully deleted the event!</p>
+    </div>
+
+    <script>
+        // Fetch events from the server
+        async function loadEvents() {
+            const response = await fetch('fetchEvents');
+            const events = await response.json();
+
+            const eventList = document.getElementById('event-list');
+            eventList.innerHTML = '';
+
+            events.forEach(event => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${event.name}</td>
+                    <td>${event.description}</td>
+                    <td>${event.date}</td>
+                    <td>${event.location}</td>
+                    <td><button class="btn" onclick="deleteEvent('${event.id}')">Delete</button></td>
+                `;
+                eventList.appendChild(row);
+            });
+        }
+
+        // Delete event
+        async function deleteEvent(eventId) {
+            try {
+                const response = await fetch('deleteEvent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({ eventId:'123' })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showPopup();
+                    loadEvents();
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                alert('An error occurred: ' + error.message);
+            }
+        }
+
+        // Show popup message
+        function showPopup() {
+            const popup = document.getElementById('popup');
+            popup.style.display = 'block';
+            setTimeout(closePopup, 3000); // Close popup after 3 seconds
+        }
+
+        // Close popup message
+        function closePopup() {
+            const popup = document.getElementById('popup');
+            popup.style.display = 'none';
+        }
+
+        // Load events on page load
+        document.addEventListener('DOMContentLoaded', loadEvents);
+    </script>
+</body>
+</html>

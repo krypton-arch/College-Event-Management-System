@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Event</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Admin - Add New Event</h1>
+        <div class="nav-links">
+            <a href="adminhome.html">Admin Home</a>
+            <a href="login.html">Sign Out</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="form-section">
+            <h2>Add New Event</h2>
+            <form id="add-event-form">
+                <div class="form-group">
+                    <label for="event-name">Event Name</label>
+                    <input type="text" id="event-name" name="eventName" placeholder="Enter event name" required>
+                </div>
+                <div class="form-group">
+                    <label for="event-description">Description</label>
+                    <textarea id="event-description" name="eventDescription" placeholder="Enter event description" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="event-date">Date</label>
+                    <input type="date" id="event-date" name="eventDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="event-location">Location</label>
+                    <input type="text" id="event-location" name="eventLocation" placeholder="Enter event location" required>
+                </div>
+                <button type="submit" class="btn">Add Event</button>
+            </form>
+            <div id="popup" role="alert" class="popup" style="display: none;">
+                <p id="popup-message"></p>
+                <button onclick="closePopup()">Close</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.getElementById('add-event-form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            // Collect form data
+            const formData = new FormData(event.target);
+            const eventDetails = {
+                name: formData.get('eventName'),
+                description: formData.get('eventDescription'),
+                date: formData.get('eventDate'),
+                location: formData.get('eventLocation'),
+            };
+
+            // Send data to server
+            try {
+                const response = await fetch('addEvent', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(eventDetails),
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showPopup('Event added successfully!');
+                    event.target.reset();
+                } else {
+                    showPopup(`Failed to add event: ${result.message}`);
+                }
+            } catch (error) {
+                showPopup(`An error occurred: ${error.message}`);
+            }
+        });
+
+        function showPopup(message) {
+            const popup = document.getElementById('popup');
+            const popupMessage = document.getElementById('popup-message');
+            popupMessage.innerText = message;
+            popup.style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

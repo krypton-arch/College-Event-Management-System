@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles2.css">
+    <title>College Event Management</title>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>College Event List</h1>
+        <div class="nav-links">
+            <a href="my_rsvps.html">My RSVPs</a>
+            <a href="login.html">Sign Out</a>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <h2>Welcome to College Event Management</h2>
+        <p>Your gateway to all upcoming college events. Stay informed, book your tickets, and enjoy every event!</p>
+    </header>
+
+    <main class="main-content">
+        <aside class="sidebar">
+            <h3>About Our Events</h3>
+            <p>Our college hosts a variety of events throughout the year, from orientation to graduation ceremonies. Join us to network, have fun, and make lasting memories!</p>
+            <h3>Contact Us</h3>
+            <p>Email: events@college.edu</p>
+            <p>Phone: (123) 456-7890</p>
+        </aside>
+
+        <section class="event-list">
+            <h2>Upcoming Events</h2>
+            <div class="event-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Event Name</th>
+                            <th>Description</th>
+                            <th>Date</th>
+                            <th>Location</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="event-list">
+                        <!-- Events will be dynamically loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div class="popup" id="popup" role="alertdialog" aria-labelledby="popup-title" aria-describedby="popup-message" style="display: none;">
+        <span class="popup-close" onclick="closePopup()" role="button" aria-label="Close popup">&times;</span>
+        <h2 id="popup-title">Notification</h2>
+        <p id="popup-message"></p>
+    </div>
+
+    <script>
+        // Load events from the server
+        async function loadEvents() {
+            try {
+                const response = await fetch('fetchEvents'); // Fetch events from the servlet
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const events = await response.json();
+                const eventList = document.getElementById('event-list');
+
+                events.forEach(event => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${event.name}</td>
+                        <td>${event.description}</td>
+                        <td>${event.date}</td>
+                        <td>${event.location}</td>
+                        <td><button class="btn" onclick="registerEvent('${event.name}')">Book Tickets</button></td>
+                    `;
+                    eventList.appendChild(row);
+                });
+            } catch (error) {
+                showPopup(`Failed to load events: ${error.message}`);
+            }
+        }
+
+        // Register for an event
+        async function registerEvent(eventName) {
+            try {
+                const response = await fetch('bookEvent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({ eventName: eventName }) // Updated key to match servlet
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showPopup(`You have successfully registered for ${eventName}.`);
+                } else {
+                    showPopup(`Registration failed: ${data.message}`);
+                }
+            } catch (error) {
+                showPopup(`An error occurred: ${error.message}`);
+            }
+        }
+
+        // Show a popup message
+        function showPopup(message) {
+            document.getElementById('popup-message').innerText = message;
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        // Close the popup
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        // Load events when the page loads
+        document.addEventListener('DOMContentLoaded', loadEvents);
+    </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Home</title>
+    <link rel="stylesheet" href="adminhome_css.css">
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Admin Home</h1>
+        <div class="nav-links">
+            <a href="adminnew.html">Add New Event</a>
+            <a href="login.html">Sign Out</a>
+        </div>
+    </nav>
+
+    <main class="dashboard">
+        <header>
+            <h2 id="h2">Event Dashboard</h2>
+        </header>
+
+        <section class="event-list">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Event Name</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+                <tbody id="event-list">
+                    <!-- Events will be dynamically loaded here -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script>
+        // Fetch events from the server
+        async function loadEvents() {
+            const response = await fetch('fetchEvents');
+            const events = await response.json();
+
+            const eventList = document.getElementById('event-list');
+            eventList.innerHTML = '';
+
+            events.forEach(event => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${event.name}</td>
+                    <td>${event.description}</td>
+                    <td>${event.date}</td>
+                    <td>${event.location}</td>
+               
+                `;
+                eventList.appendChild(row);
+            });
+        }
+
+        // Load events on page load
+        document.addEventListener('DOMContentLoaded', loadEvents);
+    </script>
+</body>
+</html>
