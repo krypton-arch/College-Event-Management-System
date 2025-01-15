@@ -15,7 +15,6 @@ A web-based event management system designed for colleges, enabling students to 
 - [Configuration](#-configuration)
 - [API Documentation](#-api-documentation)
 - [Contributing](#-contributing)
-- [License](#-license)
 
 ## ✨ Features
 
