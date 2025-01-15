@@ -1,6 +1,5 @@
 # College Event Management System 🎓
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java](https://img.shields.io/badge/Java-17-red.svg)](https://www.oracle.com/java/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-blue.svg)](https://www.mysql.com/)
 [![Servlet](https://img.shields.io/badge/Servlet-Jakarta-green.svg)](https://jakarta.ee/)
@@ -61,12 +60,11 @@ src/
     ├── login.html
     ├── my_rsvps.html
     ├── register.html
-    └── css/
-        ├── adminhome_css.css
-        ├── css_loginregister.css
-        ├── register_css.css
-        ├── styles2.css
-        └── styles3.css
+    ├── adminhome_css.css
+    ├── login_css.css
+    ├── register_css.css
+    ├── styles2.css
+    └── styles3.css
 ```
 
 ## 🚀 Getting Started
@@ -131,9 +129,9 @@ src/
 Update `JDBC_URL`, `JDBC_USER`, and `JDBC_PASS` in the servlet files if needed:
 
 ```java
-private static final String JDBC_URL = "jdbc:mysql://localhost:3306/user_management";
-private static final String JDBC_USER = "root";
-private static final String JDBC_PASS = "root";
+private static final String JDBC_URL = "jdbc:mysql://localhost/user_management";
+private static final String JDBC_USER = "your_userid";
+private static final String JDBC_PASS = "your_password";
 ```
 
 ## 📝 API Documentation
@@ -176,10 +174,6 @@ private static final String JDBC_PASS = "root";
 > - Enable HTTPS
 > - Implement rate limiting
 > - Add input sanitization
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
